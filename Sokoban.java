@@ -27,7 +27,7 @@ public class Sokoban{
                      {6,5},
                      {4,6}};
 
-    int[] position = {4,6};
+  //  int[] position = {4,6};
 
     if (!(isValidGrid(grid) && goalsInGrid(grid,position))) {
       System.out.println("Start the game with a valid grid and goals");
