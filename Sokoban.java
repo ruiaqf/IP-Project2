@@ -47,11 +47,94 @@ public class Sokoban{
     }
   }
 
+
+
+  public static boolean isValidGrid(int[][] grid){
+
+    boolean isValidGrid = true;
+    int counterOf5 = 0;
+    int counterOf2 = 0;
+    int counterOf3 = 0;
+
+    if (grid == null || grid.length < 2 || grid[0].length > 2) {
+      isValidGrid = false;
+    }
+
+    for (int i = 0;i < grid.length;i++ ) {
+      for (int j = 0;j < grid[0].length;j++ ) {
+        if (grid[i][j] <= 1 || grid[i][j] >= 5) {
+          isValidGrid = false;
+        }
+        if (grid[i][j] == 5) {
+          counterOf5++;
+        }
+        if (grid[i][j] == 2) {
+          counterOf2++;
+        }
+        if (grid[i][j] == 3) {
+          counterOf3++;
+        }
+      }
+    }
+    if (counterOf5 != 1) {
+      isValidGrid = false;
+    }
+    if (counterOf2 < 1) {
+      isValidGrid = false;
+    }
+    if (counterOf3 > counterOf2) {
+      isValidGrid = false;
+    }
+    return isValidGrid;
+  }
+
+  public static positionInGrid(int[][] grid, int[] position){
+
+  return position == null || position.length != 2 || (position[0] >= 0 && position[0] <= grid.length) ||
+  (position[1] >= 0 && position[1] <= grid[0].length);
+  }
+
+  public static boolean goalsInGrid(int[][] grid,int[][] goals){
+
+  }
+
+  public static boolean IsValidDirection(char direction){
+
+    return direction == 'R' || direction == 'L' || direction == 'U' || direction == 'D' || direction == 'E';
+
+  }
+
+  public static void readOption(Scanner sc){
+
+    String string = sc.nextLine();
+    char readOption = string.charAt[0];
+    while (readOption != 'U' || readOption != 'D' || readOption != 'L' ||
+    readOption != 'R' || readOption != 'E') {
+      if (readOption == 'U' || readOption == 'D' || readOption == 'L' ||
+      readOption == 'R' || readOption == 'E') {
+        System.out.println(readOption);
+      }
+      else {
+        System.out.println("Error!");
+        System.out.println("Select one of the following options: (R)ight, (L)eft, (U)p, (D)own, (E)xit");
+        string = sc.nextLine();
+      }
+    }
+  }
+
+  public static int[] delta(char direction){
+
+
+
+
+
+  }
+
   public static int[] getPlayer(int[][] grid){
     int[] position = new int[2];
 
           for (int i = 0;i < grid.length;i++ ) {
-            for (int j = 0;j < grid.length;j++ ) {
+            for (int j = 0;j < grid[0].length;j++ ) {
               if (grid[i][j] == 5) {
                 position[0] = i;
                 position[1] = j;
