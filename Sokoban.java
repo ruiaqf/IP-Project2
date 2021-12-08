@@ -197,7 +197,13 @@ public class Sokoban{
           if (grid[i][m] == 1) {
             System.out.print(" " + " ");
           }
-          if (grid[i][m] == 2) {
+          int[] position = new int[2];
+          position[0] = i;
+          position[1] = m;
+          if (grid[i][m] == 2 && belongsTo(grid,goals,position)) {
+            System.out.print("*" + " ");
+          }
+          if (grid[i][m] == 2 && !(belongsTo(grid,goals,position))) {
             System.out.print("B" + " ");
           }
           if (grid[i][m] == 3) {
@@ -241,7 +247,7 @@ public class Sokoban{
                        {5,3},
                        {5,6},
                        {6,4}};
-                       move(grid,goals,'u');
+                       move(grid,goals,'d');
                        print(grid,goals);
 
     }
