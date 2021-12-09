@@ -83,42 +83,41 @@ public class Sokoban{
     boolean directionUpperCase = (direction == 'R' || direction == 'L' ||
     direction == 'U' || direction == 'D' || direction == 'E');
 
-    boolean directionLowerCase = (direction == 'r' || direction == 'l' ||
-    direction == 'u' || direction == 'd' || direction == 'e');
 
-    return directionLowerCase || directionUpperCase;
+    return directionUpperCase;
 
   }
 
-  public static void readOption(Scanner sc){
+  public static char readOption(Scanner sc){
 
     String string = sc.nextLine();
-    char readOption = string.charAt(0);
-      if (isValidDirection(readOption)) {
-        System.out.println(readOption);
+    char direction = string.charAt(0);
+      if (isValidDirection(direction)) {
+        System.out.println(direction);
       }
       else {
         do {
           System.out.println("Error!");
           System.out.println("Select one of the following options: (R)ight, (L)eft, (U)p, (D)own, (E)xit");
           string = sc.nextLine();
-          readOption = string.charAt(0);
-        } while (!(isValidDirection(readOption)));
+          direction = string.charAt(0);
+        } while (!(isValidDirection(direction)));
       }
+      return direction;
   }
 
   public static int[] delta(char direction){
     int[] delta = new int[2];
-    if (direction == 'l' || direction == 'L') {
+    if (direction == 'L') {
       delta[0] = 0; delta[1] = -1;
     }
-    if (direction == 'u' || direction == 'U') {
+    if (direction == 'U') {
       delta[0] = -1; delta[1] = 0;
     }
-    if (direction == 'd' || direction == 'D') {
+    if (direction == 'D') {
       delta[0] = 1; delta[1] = 0;
     }
-    if (direction == 'r' || direction == 'R') {
+    if (direction == 'R') {
       delta[0] = 0; delta[1] = 1;
     }
 
@@ -166,26 +165,41 @@ public class Sokoban{
 
   public static boolean ableToMove(int [][] grid,char direction){
 
-    boolean conditionA = (grid[getPlayer(grid)[0] + delta(direction)[0]][getPlayer(grid)[1] + delta(direction)[1]] == 1) ||
-    (grid[getPlayer(grid)[0] + delta(direction)[0]][getPlayer(grid)[1] + delta(direction)[1]] == 3);
+    int[] p = new int[2];
+    p = getPlayer(grid);
+    int[] d = new int[2];
+    d = delta(direction);
 
-    boolean conditionB = (grid[getPlayer(grid)[0] + delta(direction)[0]][getPlayer(grid)[1] + delta(direction)[1]] == 2) &&
-    ((grid[getPlayer(grid)[0] + (delta(direction)[0]*2)][getPlayer(grid)[1] + (delta(direction)[1]*2)] == 1) ||
-    (grid[getPlayer(grid)[0] + (delta(direction)[0]*2)][getPlayer(grid)[1] + (delta(direction)[1]*2)] == 3));
+    boolean conditionA = grid[p[0] + d[0]][p[1] + d[1]] == 1 || grid[p[0] + d[0]][p[1] + d[1]] == 3;
 
-    boolean ableToMove = conditionA || conditionB;
-    return ableToMove;
+    boolean conditionB = grid[p[0] + d[0]][p[1] + d[1]] == 2 &&
+    (grid[p[0] + (d[0]*2)][p[1] + (d[1]*2)] == 1 || grid[p[0] + (d[0]*2)][p[1] + (d[1]*2)] == 3);
+
+    return conditionA || conditionB;
   }
 
 
   static void move(int [][] grid, int [][] goals, char direction){
+    int[] position = getPlayer(grid);
+    grid[position[0] + delta(direction)[0]][position[1]+delta(direction)[1]] = 5;
 
-          if (ableToMove(grid,direction)) {
-            grid[getPlayer(grid)[0] + delta(direction)[0]][getPlayer(grid)[1] + delta(direction)[1]] = 5;
-          }
+    if (ableToMove(grid,direction)) {
+      if (belongsTo(grid,goals,position)){
+        grid[position[0]][position[1]] = 3;
+      }
+      else {
+        grid[position[0]][position[1]] = 1;
+      }
+    }
   }
-
   static void print(int[][] grid, int[][] goals){
+
+    System.out.println("Welcome to Sokoban!");
+    System.out.println("Consider that the Sokoban symbols are represented by the following digits: ");
+    System.out.println("1 - blank   2 - box   3 - goal   4 - wall   5 - player");
+    System.out.println("The symbolic representation on the right may help you while playing.");
+    System.out.println("");
+
 
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
@@ -219,18 +233,14 @@ public class Sokoban{
         System.out.println();
 
       }
+    System.out.println("Select one of the following options: (R)ight, (L)eft, (U)p, (D)own, (E)xit");
+
     }
 
     public static void main(String[] args) {
 
 
       Scanner sc = new Scanner(System.in);
-      System.out.println("Welcome to Sokoban!");
-      System.out.println("Consider that the Sokoban symbols are represented by the following digits: ");
-      System.out.println("1 - blank   2 - box   3 - goal   4 - wall   5 - player");
-      System.out.println("The symbolic representation on the right may help you while playing.");
-      System.out.println("");
-
       int[][] grid = {{4,4,4,1,1,1,4,1},
                       {4,3,5,2,1,1,4,1},
                       {4,4,4,1,2,3,4,1},
@@ -247,8 +257,23 @@ public class Sokoban{
                        {5,3},
                        {5,6},
                        {6,4}};
-                       move(grid,goals,'d');
-                       print(grid,goals);
+      char direction;
+      if (isValidGrid(grid) && goalsInGrid(grid,goals)) {
+         print(grid,goals);
+         do {
+          direction = readOption(sc);
+             if (direction != 'E') {
+               move(grid,goals,direction);
+               print(grid,goals);
+             }
+             else {
+               System.out.println("Thank you for playing Sokoban!");
+             }
+         } while (direction != 'E');
+      }
 
+      else {
+         System.out.println("Error! Start the game with valid grid and goals.");
+      }
     }
   }
