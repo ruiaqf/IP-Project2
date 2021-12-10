@@ -165,32 +165,60 @@ public class Sokoban{
 
   public static boolean ableToMove(int [][] grid,char direction){
 
-    int[] p = new int[2];
-    p = getPlayer(grid);
-    int[] d = new int[2];
-    d = delta(direction);
+    boolean ableToMove = false;
+    
+    int[] player = getPlayer(grid);
 
-    boolean conditionA = grid[p[0] + d[0]][p[1] + d[1]] == 1 || grid[p[0] + d[0]][p[1] + d[1]] == 3;
+    int[] move = delta(direction);
 
-    boolean conditionB = grid[p[0] + d[0]][p[1] + d[1]] == 2 &&
-    (grid[p[0] + (d[0]*2)][p[1] + (d[1]*2)] == 1 || grid[p[0] + (d[0]*2)][p[1] + (d[1]*2)] == 3);
+    int[] position = new int [2];
+    position[0] = player[0] + move[0];
+    position[1] = player[1] + move[1];
 
-    return conditionA || conditionB;
+    int[] position2 = new int [2];
+    position2[0] = player[0] + move[0]*2;
+    position2[1] = player[1] + move[1]*2;
+
+    if (positionInGrid(grid,position)) {
+
+      if (isAvailable(grid,position) || grid[position[0]][position[1]] == 2 && isAvailable(grid,position2)) {
+      ableToMove = true;
+      }
+    }
+    return ableToMove;
   }
 
 
   static void move(int [][] grid, int [][] goals, char direction){
-    int[] position = getPlayer(grid);
-    grid[position[0] + delta(direction)[0]][position[1]+delta(direction)[1]] = 5;
+
+    int[] player = getPlayer(grid);
+
+    int[] move = delta(direction);
+
+    int[] position = new int [2];
+    position[0] = player[0] + move[0];
+    position[1] = player[1] + move[1];
+
+    int[] position2 = new int [2];
+    position2[0] = player[0] + move[0]*2;
+    position2[1] = player[1] + move[1]*2;
 
     if (ableToMove(grid,direction)) {
-      if (belongsTo(grid,goals,position)){
-        grid[position[0]][position[1]] = 3;
+      if (belongsTo(grid,goals,player)) {
+        grid[player[0]][player[1]] = 3;
       }
       else {
-        grid[position[0]][position[1]] = 1;
+        grid[player[0]][player[1]] = 1;
+      }
+      if (isAvailable(grid,position)) {
+        grid[position[0]][position[1]] = 5;
+      }
+      else {
+        grid[position[0]][position[1]] = 5;
+        grid[position2[0]][position2[1]] = 2;
       }
     }
+
   }
   static void print(int[][] grid, int[][] goals){
 
@@ -258,6 +286,8 @@ public class Sokoban{
                        {5,6},
                        {6,4}};
       char direction;
+
+
       if (isValidGrid(grid) && goalsInGrid(grid,goals)) {
          print(grid,goals);
          do {
