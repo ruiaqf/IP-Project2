@@ -6,7 +6,8 @@
  * Compile: javac Sokoban.java
  * Execute: java Sokoban
  *
- * @author RuiFerreira 58837
+ * @author Rui Ferreira 58837
+ * @author Rafael Francisco 58836
  */
 import java.util.Scanner;
 
@@ -115,7 +116,7 @@ public class Sokoban{
   * @ensures {@code true || false}
   */
   public static boolean positionInGrid(int[][] grid, int[] position){
-    
+
   return position != null && position.length == 2 && (position[0] >= 0 && position[0] <= grid.length) &&
   (position[1] >= 0 && position[1] <= grid[0].length);
   }
